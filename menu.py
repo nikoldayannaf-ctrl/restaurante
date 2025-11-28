@@ -1,15 +1,15 @@
 class Menu:
     def __init__(self, controlador):
-    #controlador: es un objeto de la clase que Joseph creará.Aquí solo lo recibimos para poder llamar sus funciones.
+        # controlador: objeto de ControladorRestaurante
         self.controlador = controlador
 
     def mostrar(self):
         print("========== MENÚ PRINCIPAL ==========")
-        print("1. Agregar persona")
-        print("2. Buscar persona")
-        print("3. Actualizar persona")
-        print("4. Eliminar persona")
-        print("5. Listar personas")
+        print("1. Listar pedidos")
+        print("2. Filtrar pedidos por categoría")
+        print("3. Total vendido por mes")
+        print("4. Ventas por mesero")
+        print("5. Buscar pedido por ID")
         print("0. Salir")
 
     def ejecutar(self):
@@ -18,21 +18,21 @@ class Menu:
             opcion = input("Seleccione una opción: ")
 
             if opcion == "1":
-                self.controlador.agregar_persona()
+                self.controlador.listar_pedidos()
 
             elif opcion == "2":
-                self.controlador.buscar_persona()
+                self.controlador.filtrar_por_categoria()
 
             elif opcion == "3":
-                self.controlador.actualizar_persona()
+                self.controlador.total_por_mes()
 
             elif opcion == "4":
-                self.controlador.eliminar_persona()
+                self.controlador.ventas_por_mesero()
 
             elif opcion == "5":
-                self.controlador.listar_personas()
+                self.controlador.buscar_pedido()
 
-            elif opcion == "6":
+            elif opcion == "0":
                 print("Saliendo del sistema...")
                 break
 
