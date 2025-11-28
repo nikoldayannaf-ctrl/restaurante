@@ -1,70 +1,74 @@
-from personas import Persona
+import csv
 
-class ControladorPersonas:
-    def __init__(self):
-        self.personas = []  # lista donde guardamos los objetos Persona
+class ControladorRestaurante:
+    def __init__(self, archivo):
+        self.pedidos = []
+        self.cargar_csv(archivo)
 
-    def agregar_persona(self):
-        print("\n--- Agregar Persona ---")
-        nombre = input("Ingrese nombre: ")
-        apellido = input("Ingrese apellido: ")
-        documento = input("Ingrese documento: ")
+    def cargar_csv(self, archivo):
+        with open(archivo, newline='', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for fila in reader:
+                # Convertimos algunos valores numéricos
+                fila["order_id"] = int(fila["order_id"])
+                fila["quantity"] = int(fila["quantity"])
+                fila["unit_price"] = float(fila["unit_price"])
+                fila["total"] = float(fila["total"])
+                self.pedidos.append(fila)
 
-        # verificar si ya existe
-        for persona in self.personas:
-            if persona.documento == documento:
-                print(" Ya existe una persona con ese documento.")
-                return
+    def listar_pedidos(self):
+        print(" Lista de Pedidos ")
+        for p in self.pedidos:
+            print(p)
 
-        nueva = Persona(nombre, apellido, documento)
-        self.personas.append(nueva)
-        print("✔ Persona agregada correctamente.")
+    def filtrar_por_categoria(self):
+        print(" Filtrar por Categoría ")
+        categoria = input("Ingrese categoría: ").lower()
 
-    def buscar_persona(self):
-        print("\n--- Buscar Persona ---")
-        documento = input("Ingrese documento a buscar: ")
+        resultado = [p for p in self.pedidos if p["category"].lower() == categoria]
 
-        for persona in self.personas:
-            if persona.documento == documento:
-                print("✔ Persona encontrada:")
-                print(persona)
-                return
+        if not resultado:
+            print("No hay pedidos para esa categoría.")
+        else:
+            for p in resultado:
+                print(p)
 
-        print(" No se encontró una persona con ese documento.")
+    def total_por_mes(self):
+        print(" Total Vendido por Mes ")
+        totales = {}
 
-    def actualizar_persona(self):
-        print("\n--- Actualizar Persona ---")
-        documento = input("Ingrese documento de la persona a actualizar: ")
+        for p in self.pedidos:
+            fecha = p["order_date"]  
+            mes = int(fecha.split("-")[1])  
 
-        for persona in self.personas:
-            if persona.documento == documento:
-                print("Persona encontrada. Ingrese los nuevos datos:")
-                persona.nombre = input("Nuevo nombre: ")
-                persona.apellido = input("Nuevo apellido: ")
-                persona.documento = input("Nuevo documento: ")
+            totales[mes] = totales.get(mes, 0) + p["total"]
 
-                print("✔ Persona actualizada correctamente.")
-                return
+        for mes, valor in totales.items():
+            print(f"Mes {mes}: ${valor}")
 
-        print(" No se encontró una persona con ese documento.")
+    def ventas_por_mesero(self):
+        print("\n--- Ventas por Mesero ---")
+        totales = {}
 
-    def eliminar_persona(self):
-        print("\n--- Eliminar Persona ---")
-        documento = input("Ingrese documento a eliminar: ")
+        for p in self.pedidos:
+            mesero = p["waiter"]
+            totales[mesero] = totales.get(mesero, 0) + p["total"]
 
-        for persona in self.personas:
-            if persona.documento == documento:
-                self.personas.remove(persona)
-                print("✔ Persona eliminada correctamente.")
-                return
+        for m, valor in totales.items():
+            print(f"{m}: ${valor}")
 
-        print(" No se encontró una persona con ese documento.")
-
-    def listar_personas(self):
-        print("\n--- Lista de Personas ---")
-        if not self.personas:
-            print("No hay personas registradas.")
+    def buscar_pedido(self):
+        print(" Buscar Pedido por ID ")
+        try:
+            order_id = int(input("Ingrese ID del pedido: "))
+        except:
+            print("ID inválido.")
             return
 
-        for persona in self.personas:
-            print(persona)
+        for p in self.pedidos:
+            if p["order_id"] == order_id:
+                print("Pedido encontrado:")
+                print(p)
+                return
+
+        print("No se encontró un pedido con ese ID.")
