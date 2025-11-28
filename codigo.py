@@ -33,6 +33,10 @@ traducciones = {
     "table" : "mesa",
     "orden_table" : "fecha_del_pedido",
     "order_id" : "id_del_pedido"
+
+
+
+
 }
 
 def traducir(texto):
