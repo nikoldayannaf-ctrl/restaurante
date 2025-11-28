@@ -39,6 +39,7 @@ traducciones = {
 
 }
 
+
 def traducir(texto):
     if texto is None:
         return None
